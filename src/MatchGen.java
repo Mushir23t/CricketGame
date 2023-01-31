@@ -14,9 +14,9 @@ public class MatchGen {
             Team2.AddPlayer(List2[i]);
         }
         int target = Integer.MAX_VALUE;
-        Bowling.Innings I1 = new Bowling.Innings(Team1, Team2);
+        Innings I1 = new Innings(Team1, Team2);
         I1.BeginInn(target);
-        Bowling.Innings I2 = new Bowling.Innings(Team2, Team1);
+        Innings I2 = new Innings(Team2, Team1);
         I2.BeginInn(I1.Runs + 1);
         System.out.println("Team1 Score: " + I1.Runs + "/" + I1.Wickets);
         System.out.println("Team2 Score: " + I2.Runs + "/" + I2.Wickets);
