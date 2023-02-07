@@ -22,13 +22,19 @@ public abstract class SpringUtility {
             Team2.AddPlayer(List2[i]);
         }
     }
-    static ArrayList<String> getStrings() {
+    static String getStrings() {
         SpringUtility.Initialize();
         match1 = new Match(Team1, Team2);
         match1.RunMatch();
         Scard = new ScoreCard(match1);
         Scard.Print();
-        return Scard.getStrings();
+        ArrayList<String> s = Scard.getStrings();
+        String finalString = String.join("<br>", s);
+        return finalString;
     }
 
+//      ArrayList<String> strings = SpringUtility.getStrings();
+//        String joinedString = String.join("<br>", strings);
+//        joinedString = joinedString.replace(" ", "&nbsp;");
+//        return ResponseEntity.ok(joinedString);
 }
