@@ -4,6 +4,7 @@ import com.project.finalcricketgame.dto.PlayerDTO;
 import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,7 +42,7 @@ public class PlayerService {
     }
 
 
-    Optional<Player> findByisActive(int player_id) {
+    public Optional<Player> findByisActive(int player_id) {
         return playerRepository.isActiveByPlayerId(player_id);
     }
 
@@ -72,5 +73,6 @@ public class PlayerService {
             return "Player deleted Successfully";
         }
     }
+
 
 }

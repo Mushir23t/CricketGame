@@ -1,15 +1,22 @@
 package com.project.finalcricketgame.service;
 
+import com.project.finalcricketgame.dto.BattingStatsDTO;
 import com.project.finalcricketgame.entities.BattingStats;
 import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.repository.BattingStatsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Tuple;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BattingService {
@@ -50,6 +57,15 @@ public class BattingService {
         for (BattingStats battingStats : battingStatsList) {
             battingStatsRepository.save(battingStats);
         }
+    }
+
+    public ResponseEntity<?> getBattingStats(int player_id) {
+        Tuple tuple = battingStatsRepository.findByPlayer(player_id);
+        Map<String, BigDecimal> result = new HashMap<>();
+        result.put("balls_played", (BigDecimal) tuple.get("sum(balls_played)"));
+        result.put("runs_scored", (BigDecimal) tuple.get("sum(runs_scored)"));
+        result.put("matches", new BigDecimal((BigInteger) tuple.get("matches")));
+        return ResponseEntity.ok(result);
     }
 }
 

@@ -1,17 +1,17 @@
 package com.project.finalcricketgame.service;
 
-import com.project.finalcricketgame.entities.BowlingStats;
-import com.project.finalcricketgame.entities.Match;
-import com.project.finalcricketgame.entities.Player;
-import com.project.finalcricketgame.entities.Team;
+import com.project.finalcricketgame.dto.BattingStatsDTO;
+import com.project.finalcricketgame.dto.BowlingStatsDTO;
+import com.project.finalcricketgame.entities.*;
 import com.project.finalcricketgame.repository.BowlingStatsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import javax.persistence.Tuple;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
 
 @Service
 public class BowlingService {
@@ -90,6 +90,15 @@ public class BowlingService {
         for (BowlingStats bowlingStats : bowlingStatsList) {
             bowlingStatsRepository.save(bowlingStats);
         }
+    }
+
+    public ResponseEntity<?> getBowlingStats(int player_id) {
+        Tuple tuple = bowlingStatsRepository.findByPlayer(player_id);
+        Map<String, BigDecimal> result = new HashMap<>();
+        result.put("overs", (BigDecimal) tuple.get("sum(overs)"));
+        result.put("wickets", (BigDecimal) tuple.get("sum(wickets)"));
+        result.put("matches", new BigDecimal((BigInteger) tuple.get("matches")));
+        return ResponseEntity.ok(result);
     }
 
 
