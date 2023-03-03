@@ -91,7 +91,6 @@ public class InningsService {
             updateStats(score);
             if (runs >= target || wickets == 10) {
                 inningsEnded = true;
-                System.out.println("INnings over");
                 break;
             }
         }
@@ -130,8 +129,6 @@ public class InningsService {
             inningsRepository.save(inningsObject1);
         else
             inningsRepository.save(inningsObject2);
-        System.out.println(runs);
-        System.out.println("Between two innings");
         updateOvers();
         battingService.save();
         bowlingService.save();

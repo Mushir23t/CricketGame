@@ -1,10 +1,15 @@
 package com.project.finalcricketgame.service;
 
+import com.mysql.cj.log.Log;
+import com.project.finalcricketgame.controller.MatchController;
 import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.MatchTeamMapping;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.repository.MatchRepository;
 import com.project.finalcricketgame.repository.MatchTeamMappingRepository;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +34,13 @@ public class MatchService {
     @Autowired
     private MatchTeamMappingRepository matchTeamMappingRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(MatchService.class);
+
     public boolean getMatch(int match_id) {
         Match match = matchRepository.findById(match_id);
         return match != null && !match.isDeleted();
     }
+
 
     public Match findMatch(int match_id){
         return matchRepository.findById(match_id);
@@ -53,16 +61,17 @@ public class MatchService {
         Match match = matchRepository.findById(match_id);
         Team team1 = teamService.findTeamById(matchTeamMapping.getTeam1_id());
         Team team2 = teamService.findTeamById(matchTeamMapping.getTeam2_id());
-        System.out.println("First Batting Team is " + team1.getName());
         inningsService.initialiseInnings(1, team1, team2, match);
+        logger.debug("First innings started with batting Team {}", team1.getName());
         inningsService.beginInnings(Integer.MAX_VALUE);
         firstInningsTotal = inningsService.getRuns();
-        System.out.println("Target is " + firstInningsTotal);
+        logger.debug("Team {} scored {}/{}", team1.getName(),firstInningsTotal,inningsService.getWickets());
         inningsService.initialiseInnings(2, team2, team1, match);
         inningsService.beginInnings(firstInningsTotal + 1);
         secondInningsTotal = inningsService.getRuns();
-        System.out.println("Second team scored" + inningsService.getRuns() + "/" + inningsService.getWickets());
+        logger.debug("Team  {} scored {} / {}" ,team2.getName(),inningsService.getRuns() , inningsService.getWickets());
         updateMatchWinner(team1, team2, match.getMatch_id());
+        logger.debug("Team {} won", match.getWinner());
     }
 
     private void updateMatchWinner(Team team1, Team team2, int id) {
@@ -79,19 +88,22 @@ public class MatchService {
     }
 
     public boolean check(int match_id) {
-        if(!isValidMatch(match_id)){
-            return false;
-        }
         Match match = matchRepository.findById(match_id);
-        if (Objects.equals(match.getStatus(), "Finished")) {
+        if(match == null || match.isDeleted()){
             return false;
         }
-        return true;
+        return !Objects.equals(match.getStatus(), "Finished");
     }
 
     public boolean isValidMatch(int match_id){
         Match match =  matchRepository.findById(match_id);
-        return match != null && !match.isDeleted();
+        if(match == null){
+            return false;
+        }
+        if(match.isDeleted()){
+            return false;
+        }
+        return !Objects.equals(match.getStatus(), "Not started yet");
     }
 
     public void save(Match match) {
@@ -102,10 +114,12 @@ public class MatchService {
     public String remove(int match_id) {
         Match match = matchRepository.findById(match_id);
         if (match == null) {
+            logger.error("Attempted to delete match with invalid id {}", match_id);
             return "No such match with match_id : " + match_id;
         } else {
             match.setDeleted(true);
             matchRepository.save(match);
+            logger.info("Match with id {} deleted", match_id);
             return "Deleted successfully";
         }
     }

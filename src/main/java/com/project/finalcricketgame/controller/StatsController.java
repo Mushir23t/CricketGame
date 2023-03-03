@@ -1,6 +1,8 @@
 package com.project.finalcricketgame.controller;
 
 import com.project.finalcricketgame.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,39 +19,42 @@ public class StatsController {
 
     @Autowired
     MatchService matchService;
-
-
     @Autowired
     PlayerService playerService;
-
     @Autowired
     BattingService battingService;
-
     @Autowired
     BowlingService bowlingService;
+    private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
 
     @GetMapping("Match/{match_id}/Scorecard")
     public ResponseEntity<?> getScorecard(@PathVariable int match_id) {
-        if(!matchService.isValidMatch(match_id)){
+        if (!matchService.isValidMatch(match_id)) {
+            logger.warn("Scorecard Request received , Match not started yet or no match with match_id {}",match_id);
             return ResponseEntity.ok("Match not started yet or no match with match_id:" + match_id);
         }
-       return ResponseEntity.ok(scoreCardService.getScoreCard(match_id));
+        logger.info("Scorecard Request received , Scorecard of Match {} fetched",match_id);
+        return ResponseEntity.ok(scoreCardService.getScoreCard(match_id));
     }
 
     @GetMapping("/BattingStats/{player_id}")
-    public ResponseEntity<?> getBattingStats(@PathVariable int player_id){
-        if(playerService.findByisActive(player_id).isEmpty()){
+    public ResponseEntity<?> getBattingStats(@PathVariable int player_id) {
+        if (playerService.findByisActive(player_id).isEmpty()) {
+            logger.warn("BattingStats Request received , But player with player_id {} doesnt exist",player_id);
             return ResponseEntity.ok("Player doesn't exist");
         }
+        logger.info("BattingStats Request received , BattingStats  of Player {} fetched",player_id);
         return battingService.getBattingStats(player_id);
     }
 
 
     @GetMapping("/BowlingStats/{player_id}")
-    public ResponseEntity<?> getBowlingStats(@PathVariable int player_id){
-        if(playerService.findByisActive(player_id).isEmpty()){
+    public ResponseEntity<?> getBowlingStats(@PathVariable int player_id) {
+        if (playerService.findByisActive(player_id).isEmpty()) {
+            logger.warn("BowlingStats Request received , But player with player_id {} doesnt exist",player_id);
             return ResponseEntity.ok("Player doesn't exist");
         }
+        logger.info("BowlingStats Request received , BowlingStats  of Player {} fetched",player_id);
         return bowlingService.getBowlingStats(player_id);
     }
 }
