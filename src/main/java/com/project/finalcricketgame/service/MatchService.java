@@ -1,13 +1,11 @@
 package com.project.finalcricketgame.service;
 
-import com.mysql.cj.log.Log;
-import com.project.finalcricketgame.controller.MatchController;
+import com.project.finalcricketgame.dto.ScoreCardDTO;
 import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.MatchTeamMapping;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.repository.MatchRepository;
 import com.project.finalcricketgame.repository.MatchTeamMappingRepository;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +18,14 @@ public class MatchService {
 
     @Autowired
     MatchRepository matchRepository;
-
     @Autowired
     MatchTeamMappingService matchTeamMappingService;
-
     @Autowired
     InningsService inningsService;
-
     @Autowired
     TeamService teamService;
+    @Autowired
+    ScoreCardService scoreCardService;
     private int firstInningsTotal;
     private int secondInningsTotal;
     @Autowired
@@ -36,18 +33,18 @@ public class MatchService {
 
     private static final Logger logger = LoggerFactory.getLogger(MatchService.class);
 
+
     public boolean getMatch(int match_id) {
         Match match = matchRepository.findById(match_id);
         return match != null && !match.isDeleted();
     }
 
 
-    public Match findMatch(int match_id){
+    public Match findMatch(int match_id) {
         return matchRepository.findById(match_id);
     }
 
     public int createMatch(String team1, String team2) {
-
         Match match = new Match();
         matchRepository.save(match);
         int match_id = match.getMatch_id();
@@ -65,13 +62,14 @@ public class MatchService {
         logger.debug("First innings started with batting Team {}", team1.getName());
         inningsService.beginInnings(Integer.MAX_VALUE);
         firstInningsTotal = inningsService.getRuns();
-        logger.debug("Team {} scored {}/{}", team1.getName(),firstInningsTotal,inningsService.getWickets());
+        logger.debug("Team {} scored {}/{}", team1.getName(), firstInningsTotal, inningsService.getWickets());
         inningsService.initialiseInnings(2, team2, team1, match);
         inningsService.beginInnings(firstInningsTotal + 1);
         secondInningsTotal = inningsService.getRuns();
-        logger.debug("Team  {} scored {} / {}" ,team2.getName(),inningsService.getRuns() , inningsService.getWickets());
+        logger.debug("Team  {} scored {} / {}", team2.getName(), inningsService.getRuns(), inningsService.getWickets());
         updateMatchWinner(team1, team2, match.getMatch_id());
         logger.debug("Team {} won", match.getWinner());
+        scoreCardService.createScoreCard(match_id);
     }
 
     private void updateMatchWinner(Team team1, Team team2, int id) {
@@ -89,18 +87,18 @@ public class MatchService {
 
     public boolean check(int match_id) {
         Match match = matchRepository.findById(match_id);
-        if(match == null || match.isDeleted()){
+        if (match == null || match.isDeleted()) {
             return false;
         }
         return !Objects.equals(match.getStatus(), "Finished");
     }
 
-    public boolean isValidMatch(int match_id){
-        Match match =  matchRepository.findById(match_id);
-        if(match == null){
+    public boolean isValidMatch(int match_id) {
+        Match match = matchRepository.findById(match_id);
+        if (match == null) {
             return false;
         }
-        if(match.isDeleted()){
+        if (match.isDeleted()) {
             return false;
         }
         return !Objects.equals(match.getStatus(), "Not started yet");
@@ -123,7 +121,6 @@ public class MatchService {
             return "Deleted successfully";
         }
     }
-
 
 
 }

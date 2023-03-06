@@ -47,8 +47,8 @@ public class MatchController {
             logger.warn("Match running request received, but one of the Team doesn't have 11 players");
             return "Both team must have 11 players";
         }
-        matchService.playMatch(match_id);
         logger.info("Match with id {}, started ", match_id);
+        matchService.playMatch(match_id);
         return "Match Completed";
     }
 

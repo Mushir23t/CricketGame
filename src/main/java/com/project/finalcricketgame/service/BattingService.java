@@ -1,6 +1,5 @@
 package com.project.finalcricketgame.service;
 
-import com.project.finalcricketgame.dto.BattingStatsDTO;
 import com.project.finalcricketgame.entities.BattingStats;
 import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.Player;
@@ -24,6 +23,10 @@ public class BattingService {
     BattingStatsRepository battingStatsRepository;
     @Autowired
     PlayerTeamMapService playerTeamMapService;
+
+//    @Autowired
+//    BattingStatsRepositoryES battingStatsRepositoryES;
+
     ArrayList<BattingStats> battingStatsList;
 
 
@@ -56,7 +59,9 @@ public class BattingService {
     public void save() {
         for (BattingStats battingStats : battingStatsList) {
             battingStatsRepository.save(battingStats);
+//            battingStatsRepositoryES.save(battingStats);
         }
+
     }
 
     public ResponseEntity<?> getBattingStats(int player_id) {
@@ -67,5 +72,13 @@ public class BattingService {
         result.put("matches", new BigDecimal((BigInteger) tuple.get("matches")));
         return ResponseEntity.ok(result);
     }
+
+    // ELASTIC SEARCH FUNCTION
+
+//    public Iterable<BattingStats> findAll() {
+//        return battingStatsRepository.findAll();
+//    }
+
+
 }
 

@@ -3,11 +3,20 @@ package com.project.finalcricketgame.service;
 import com.project.finalcricketgame.dto.BattingStatsDTO;
 import com.project.finalcricketgame.dto.BowlingStatsDTO;
 import com.project.finalcricketgame.dto.ScoreCardDTO;
-import com.project.finalcricketgame.entities.*;
+import com.project.finalcricketgame.entities.BattingStats;
+import com.project.finalcricketgame.entities.BowlingStats;
+import com.project.finalcricketgame.entities.MatchTeamMapping;
+import com.project.finalcricketgame.entities.Team;
+import com.project.finalcricketgame.repository.ScoreCardES;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ScoreCardService {
@@ -22,27 +31,28 @@ public class ScoreCardService {
     @Autowired
     BattingService battingService;
 
+
     @Autowired
     PlayerTeamMapService playerTeamMapService;
 
     @Autowired
     BowlingService bowlingService;
+    @Autowired
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+    @Autowired
+    ScoreCardES scoreCardES;
+
+    private static final Logger logger = LoggerFactory.getLogger(ScoreCardService.class);
+
 
     public ScoreCardDTO getScoreCard(int match_id) {
-//        boolean isValidMatch = matchService.getMatch(match_id);
-//        if (isValidMatch) {
-//            Match match = matchService.findMatch(match_id);
-//            if (Objects.equals(match.getStatus(), "Not started yet")) {
-//                return ResponseEntity.ok("Match Hasn't started yet");
-//            }
-
-            return generateScoreCard(match_id);
-//        } else {
-//            return ResponseEntity.ok("No such match with match_id : " + match_id);
-//        }
+        Optional<ScoreCardDTO> scoreCardDTO = scoreCardES.findByMatchId(match_id);
+        return scoreCardDTO.orElse(null);
     }
 
-    private ScoreCardDTO generateScoreCard(int match_id) {
+
+    public void  createScoreCard(int match_id) {
         ScoreCardDTO scoreCardDTO;
         MatchTeamMapping matchTeamMapping = matchTeamMappingService.findByMatchId(match_id);
         Team team1 = teamService.findTeamById(matchTeamMapping.getTeam1_id());
@@ -59,10 +69,26 @@ public class ScoreCardService {
         team2battingStats = BattingStats.toDTO(battingService.getStats(match_id, team2.getName()));
         team1bowlingStats = BowlingStats.toDTO(bowlingService.getStats(match_id, team1.getName()));
         team2bowlingStats = BowlingStats.toDTO(bowlingService.getStats(match_id, team2.getName()));
-        scoreCardDTO = new ScoreCardDTO(firstInningsTotal,
-                firstInningsWicket,secondInningsTotal,secondInningsWicket,
-                team1battingStats,team2bowlingStats,team2battingStats,team1bowlingStats
+        String id = UUID.randomUUID().toString();
+        scoreCardDTO = new ScoreCardDTO(id, firstInningsTotal,
+                firstInningsWicket, secondInningsTotal, secondInningsWicket, match_id,
+                team1battingStats, team2bowlingStats, team2battingStats, team1bowlingStats
         );
-        return scoreCardDTO;
+        System.out.println(id);
+        System.out.println(firstInningsTotal);
+        System.out.println(secondInningsTotal);
+        System.out.println(firstInningsWicket);
+        System.out.println(secondInningsWicket);
+        System.out.println(team1battingStats.get(0).getRunsScored());
+        System.out.println(team1bowlingStats.get(0).getBalls());
+        System.out.println(team2battingStats.get(0).getRunsScored());
+        System.out.println(team2bowlingStats.get(0).getBalls());
+        System.out.println(match_id);
+        try{
+            scoreCardES.save(scoreCardDTO);
+        }
+        catch (NullPointerException e){
+            logger.error("NullPointerException occurred while saving document: " + e.getMessage());
+        }
     }
 }
