@@ -1,32 +1,19 @@
 package com.project.finalcricketgame.dto;
 
 import com.project.finalcricketgame.entities.BattingStats;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class BattingStatsDTO {
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getBallsPlayed() {
-        return ballsPlayed;
-    }
-
-    public void setBallsPlayed(int ballsPlayed) {
-        this.ballsPlayed = ballsPlayed;
-    }
-
-    public int getRunsScored() {
-        return runsScored;
-    }
-
-    public void setRunsScored(int runsScored) {
-        this.runsScored = runsScored;
-    }
-
+    // this is a fake comment
     private String name;
     private int ballsPlayed;
     private int runsScored;

@@ -2,47 +2,17 @@ package com.project.finalcricketgame.dto;
 
 import com.project.finalcricketgame.entities.BattingStats;
 import com.project.finalcricketgame.entities.BowlingStats;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class BowlingStatsDTO {
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getOvers() {
-        return overs;
-    }
-
-    public void setOvers(int overs) {
-        this.overs = overs;
-    }
-
-    public int getBalls() {
-        return balls;
-    }
-
-    public void setBalls(int balls) {
-        this.balls = balls;
-    }
-
-    public int getWickets() {
-        return wickets;
-    }
-
-    public void setWickets(int wickets) {
-        this.wickets = wickets;
-    }
-
-    public int getRuns() {
-        return runs;
-    }
-
-    public void setRuns(int runs) {
-        this.runs = runs;
-    }
 
     private String name;
     private int overs;

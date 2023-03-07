@@ -101,5 +101,9 @@ public class BowlingService {
         return ResponseEntity.ok(result);
     }
 
+    private static final int x = 1;
+    private static final int x2 = 1;
+    private static final int x1= 1;
+
 
 }

@@ -18,25 +18,29 @@ repositories {
 	mavenCentral()
 }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'ch.qos.logback:logback-classic:1.2.5'
-	implementation 'org.slf4j:slf4j-api:1.7.32'
-	implementation 'mysql:mysql-connector-java:8.0.28'
-    implementation 'org.jetbrains:annotations:23.0.0'
-    testImplementation 'org.projectlombok:lombok:1.18.22'
-	testImplementation 'junit:junit:4.13.1'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.7.1'
-	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
-	implementation 'io.searchbox:jest:6.3.1'
-	implementation 'com.google.code.gson:gson:2.8.7'
-
-}
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'ch.qos.logback:logback-classic:1.2.5'
+		implementation 'org.slf4j:slf4j-api:1.7.32'
+		implementation 'mysql:mysql-connector-java:8.0.28'
+		implementation 'org.jetbrains:annotations:23.0.0'
+		testImplementation 'org.projectlombok:lombok:1.18.22'
+		testImplementation 'junit:junit:4.13.1'
+		annotationProcessor 'org.projectlombok:lombok'
+		implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+		implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.7.1'
+		implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+		implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
+		implementation 'io.searchbox:jest:6.3.1'
+		implementation 'com.google.code.gson:gson:2.8.7'
+		implementation 'jakarta.json:jakarta.json-api:2.1.0'
+		implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+		testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.2'
+		testImplementation("org.junit.jupiter:junit-jupiter:5.7.2")
+		testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+		testImplementation("org.mockito:mockito-core:3.12.4")
+	}
 
 
 tasks.named('test') {

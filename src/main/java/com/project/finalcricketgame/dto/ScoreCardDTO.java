@@ -1,25 +1,22 @@
 package com.project.finalcricketgame.dto;
 
 
-import lombok.AllArgsConstructor;
+import lombok.*;
+
 import java.util.ArrayList;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-
+@Document(indexName = "scorecard")
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(indexName = "scorecard")
 @Getter
 @Setter
 public class ScoreCardDTO {
 
     @Id
     private String id;
-
     private int firstInningsTotal;
     private int FirstInningsWicket;
     private int secondInningsTotal;
