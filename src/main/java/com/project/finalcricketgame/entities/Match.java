@@ -1,24 +1,26 @@
 package com.project.finalcricketgame.entities;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "matches")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int match_id;
-    private String winner;
-    private String status;
-    private boolean isDeleted;
+    private String winner = "";
+    private String status = "Not started yet";
+    private boolean isDeleted = false;
 
-    public Match() {
-        winner = "";
-        status = "Not started yet";
-        isDeleted = false;
-    }
 
     public String getStatus() {
         return status;

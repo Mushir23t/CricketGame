@@ -27,23 +27,33 @@ public class StatsController {
     BowlingService bowlingService;
     private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
 
-    @GetMapping("Match/{match_id}/Scorecard")
-    public ResponseEntity<?> getScorecard(@PathVariable int match_id) {
+    @GetMapping("Match/{match_id}/Scorecard/ES")
+    public ResponseEntity<?> getScorecardFromES(@PathVariable int match_id) {
         if (!matchService.isValidMatch(match_id)) {
-            logger.warn("Scorecard Request received , Match not started yet or no match with match_id {}",match_id);
+            logger.warn("Scorecard Request received , Match not started yet or no match with match_id {}", match_id);
             return ResponseEntity.ok("Match not started yet or no match with match_id:" + match_id);
         }
-        logger.info("Scorecard Request received , Scorecard of Match {} fetched",match_id);
-        return ResponseEntity.ok(scoreCardService.getScoreCard(match_id));
+        logger.info("Scorecard Request received , Scorecard of Match {} fetched", match_id);
+        return ResponseEntity.ok(scoreCardService.getScoreCardFromES(match_id));
+    }
+
+    @GetMapping("/Match/{match_id}/Scorecard/Mongo")
+    public ResponseEntity<?> getScorecardFromMongo(@PathVariable int match_id) {
+        if (!matchService.isValidMatch(match_id)) {
+            logger.warn("Scorecard Request received , Match not started yet or no match with match_id {}", match_id);
+            return ResponseEntity.ok("Match not started yet or no match with match_id:" + match_id);
+        }
+        logger.info("Scorecard Request received , Scorecard of Match {} fetched", match_id);
+        return ResponseEntity.ok(scoreCardService.getScoreCardFromMongo(match_id));
     }
 
     @GetMapping("/BattingStats/{player_id}")
     public ResponseEntity<?> getBattingStats(@PathVariable int player_id) {
         if (playerService.findByisActive(player_id).isEmpty()) {
-            logger.warn("BattingStats Request received , But player with player_id {} doesnt exist",player_id);
+            logger.warn("BattingStats Request received , But player with player_id {} doesnt exist", player_id);
             return ResponseEntity.ok("Player doesn't exist");
         }
-        logger.info("BattingStats Request received , BattingStats  of Player {} fetched",player_id);
+        logger.info("BattingStats Request received , BattingStats  of Player {} fetched", player_id);
         return battingService.getBattingStats(player_id);
     }
 
@@ -51,10 +61,10 @@ public class StatsController {
     @GetMapping("/BowlingStats/{player_id}")
     public ResponseEntity<?> getBowlingStats(@PathVariable int player_id) {
         if (playerService.findByisActive(player_id).isEmpty()) {
-            logger.warn("BowlingStats Request received , But player with player_id {} doesnt exist",player_id);
+            logger.warn("BowlingStats Request received , But player with player_id {} doesnt exist", player_id);
             return ResponseEntity.ok("Player doesn't exist");
         }
-        logger.info("BowlingStats Request received , BowlingStats  of Player {} fetched",player_id);
+        logger.info("BowlingStats Request received , BowlingStats  of Player {} fetched", player_id);
         return bowlingService.getBowlingStats(player_id);
     }
 }

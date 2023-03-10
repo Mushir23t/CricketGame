@@ -1,10 +1,8 @@
 package com.project.finalcricketgame.service;
 
-import com.project.finalcricketgame.dto.PlayerDTO;
 import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.entities.PlayerTeamMapping;
-import com.project.finalcricketgame.repository.MatchTeamMappingRepository;
-import com.project.finalcricketgame.repository.PlayerTeamMappingRepository;
+import com.project.finalcricketgame.repository.jpa.PlayerTeamMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

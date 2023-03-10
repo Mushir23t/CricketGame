@@ -4,7 +4,7 @@ import com.project.finalcricketgame.entities.Innings;
 import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.Overs;
 import com.project.finalcricketgame.entities.Team;
-import com.project.finalcricketgame.repository.InningsRepository;
+import com.project.finalcricketgame.repository.jpa.InningsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

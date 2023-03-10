@@ -1,4 +1,4 @@
-package com.project.finalcricketgame.repository;
+package com.project.finalcricketgame.repository.jpa;
 
 import com.project.finalcricketgame.entities.BowlingStats;
 import org.springframework.data.jpa.repository.JpaRepository;

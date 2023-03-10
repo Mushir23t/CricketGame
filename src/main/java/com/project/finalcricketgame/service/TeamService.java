@@ -3,18 +3,15 @@ package com.project.finalcricketgame.service;
 import com.project.finalcricketgame.controller.MatchController;
 import com.project.finalcricketgame.dto.TeamDTO;
 import com.project.finalcricketgame.entities.MatchTeamMapping;
-import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.entities.Team;
-import com.project.finalcricketgame.repository.TeamRepository;
+import com.project.finalcricketgame.repository.jpa.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.SqlReturnType;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service

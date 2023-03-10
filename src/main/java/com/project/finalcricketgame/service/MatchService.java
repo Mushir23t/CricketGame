@@ -1,11 +1,12 @@
 package com.project.finalcricketgame.service;
 
-import com.project.finalcricketgame.dto.ScoreCardDTO;
 import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.MatchTeamMapping;
 import com.project.finalcricketgame.entities.Team;
-import com.project.finalcricketgame.repository.MatchRepository;
-import com.project.finalcricketgame.repository.MatchTeamMappingRepository;
+import com.project.finalcricketgame.repository.jpa.MatchRepository;
+import com.project.finalcricketgame.repository.jpa.MatchTeamMappingRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
+@Getter
+@Setter
 public class MatchService {
 
     @Autowired
@@ -46,7 +49,7 @@ public class MatchService {
 
     public int createMatch(String team1, String team2) {
         Match match = new Match();
-        matchRepository.save(match);
+        match = matchRepository.save(match);
         int match_id = match.getMatch_id();
         matchTeamMappingService.createMapping(match_id, team1, team2);
         return match.getMatch_id();
@@ -72,7 +75,7 @@ public class MatchService {
         scoreCardService.createScoreCard(match_id);
     }
 
-    private void updateMatchWinner(Team team1, Team team2, int id) {
+    public void updateMatchWinner(Team team1, Team team2, int id) {
         Match match = matchRepository.findById(id);
         if (Objects.equals(firstInningsTotal, secondInningsTotal)) {
             match.setWinner("");

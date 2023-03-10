@@ -17,13 +17,12 @@ public class PlayerController {
 
     @Autowired
     PlayerService playerService;
+    private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
 
     @PostMapping("/addPlayer")
     String addPlayer(@RequestBody PlayerDTO playerDTO) {
         return playerService.addPlayer(playerDTO);
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
 
     @GetMapping("/getPlayers")
     ResponseEntity<?> getPlayers() {

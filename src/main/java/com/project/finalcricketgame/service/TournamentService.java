@@ -1,20 +1,15 @@
 package com.project.finalcricketgame.service;
 
 import com.project.finalcricketgame.entities.Match;
-import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.entities.Tournament;
-import com.project.finalcricketgame.repository.PlayerRepository;
-import com.project.finalcricketgame.repository.TournamentRepository;
+import com.project.finalcricketgame.repository.jpa.TournamentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.Random;
 
 @Service
 public class TournamentService {

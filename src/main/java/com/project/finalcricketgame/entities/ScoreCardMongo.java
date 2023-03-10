@@ -1,13 +1,23 @@
-package com.project.finalcricketgame.dto;
+package com.project.finalcricketgame.entities;
 
-import com.project.finalcricketgame.entities.ScoreCard;
-import com.project.finalcricketgame.entities.ScoreCardMongo;
-import lombok.Data;
+import com.project.finalcricketgame.dto.BattingStatsDTO;
+import com.project.finalcricketgame.dto.BowlingStatsDTO;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 
+@Document(collection = "scorecard")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Data
-public class ScoreCardDTO {
+public class ScoreCardMongo {
+    @Id
+    private String id;
     private int firstInningsTotal;
     private int FirstInningsWicket;
     private int secondInningsTotal;
@@ -18,7 +28,9 @@ public class ScoreCardDTO {
     private ArrayList<BattingStatsDTO> team2battingStats = new ArrayList<>();
     private ArrayList<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
 
-    public ScoreCardDTO(ScoreCard scoreCard){
+
+    public ScoreCardMongo(ScoreCard scoreCard) {
+        this.id = scoreCard.getId();
         this.firstInningsTotal = scoreCard.getFirstInningsTotal();
         this.FirstInningsWicket = scoreCard.getFirstInningsWicket();
         this.secondInningsTotal = scoreCard.getSecondInningsTotal();
@@ -28,16 +40,5 @@ public class ScoreCardDTO {
         this.team2battingStats = scoreCard.getTeam2battingStats();
         this.team1bowlingStats = scoreCard.getTeam1bowlingStats();
         this.team2bowlingStats = scoreCard.getTeam2bowlingStats();
-    }
-    public ScoreCardDTO(ScoreCardMongo scoreCardMongo){
-        this.firstInningsTotal = scoreCardMongo.getFirstInningsTotal();
-        this.FirstInningsWicket = scoreCardMongo.getFirstInningsWicket();
-        this.secondInningsTotal = scoreCardMongo.getSecondInningsTotal();
-        this.secondInningsWicket = scoreCardMongo.getSecondInningsWicket();
-        this.matchId = scoreCardMongo.getMatchId();
-        this.team1battingStats = scoreCardMongo.getTeam1battingStats();
-        this.team2battingStats = scoreCardMongo.getTeam2battingStats();
-        this.team1bowlingStats = scoreCardMongo.getTeam1bowlingStats();
-        this.team2bowlingStats = scoreCardMongo.getTeam2bowlingStats();
     }
 }

@@ -2,7 +2,7 @@ package com.project.finalcricketgame.service;
 
 import com.project.finalcricketgame.entities.Innings;
 import com.project.finalcricketgame.entities.Overs;
-import com.project.finalcricketgame.repository.OversRepository;
+import com.project.finalcricketgame.repository.jpa.OversRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

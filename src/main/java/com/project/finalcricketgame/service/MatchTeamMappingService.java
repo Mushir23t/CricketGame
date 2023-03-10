@@ -1,7 +1,7 @@
 package com.project.finalcricketgame.service;
 
 import com.project.finalcricketgame.entities.MatchTeamMapping;
-import com.project.finalcricketgame.repository.MatchTeamMappingRepository;
+import com.project.finalcricketgame.repository.jpa.MatchTeamMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

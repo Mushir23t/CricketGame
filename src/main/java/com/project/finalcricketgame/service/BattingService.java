@@ -4,7 +4,7 @@ import com.project.finalcricketgame.entities.BattingStats;
 import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.entities.Team;
-import com.project.finalcricketgame.repository.BattingStatsRepository;
+import com.project.finalcricketgame.repository.jpa.BattingStatsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

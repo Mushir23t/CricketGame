@@ -1,9 +1,7 @@
 package com.project.finalcricketgame.service;
 
-import com.project.finalcricketgame.dto.BattingStatsDTO;
-import com.project.finalcricketgame.dto.BowlingStatsDTO;
 import com.project.finalcricketgame.entities.*;
-import com.project.finalcricketgame.repository.BowlingStatsRepository;
+import com.project.finalcricketgame.repository.jpa.BowlingStatsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,9 +22,9 @@ public class BowlingService {
 
     public static Integer GetBowler(Integer prevBowler, HashMap<Integer, Integer> oversBowledByPlayers) {
         Random num = new Random();
-        Integer BowlerNumber = num.nextInt(11) + 1;
+        Integer  BowlerNumber = num.nextInt(11)+ 1;
         if (oversBowledByPlayers.containsKey(BowlerNumber)) {
-            while (oversBowledByPlayers.get(BowlerNumber) > 4 || BowlerNumber.equals(prevBowler)) {
+            while (oversBowledByPlayers.get(BowlerNumber) >= 4 || BowlerNumber.equals(prevBowler)) {
                 BowlerNumber = (BowlerNumber + num.nextInt(11)) % 11 + 1;
                 if (!oversBowledByPlayers.containsKey(BowlerNumber)) {
                     break;
