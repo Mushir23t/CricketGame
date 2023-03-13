@@ -1,6 +1,8 @@
 package com.project.finalcricketgame.entities;
 
+import com.project.finalcricketgame.dto.CreatePlayerDTO;
 import com.project.finalcricketgame.dto.PlayerDTO;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -8,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "player")
 @NoArgsConstructor
+@Data
 public class Player {
 
     @Id
@@ -21,25 +24,9 @@ public class Player {
         this.isActive = true;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public Player(CreatePlayerDTO createPlayerDTO){
+        this.name = createPlayerDTO.getName();
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-
-    public int getPlayer_id() {
-        return player_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
 }

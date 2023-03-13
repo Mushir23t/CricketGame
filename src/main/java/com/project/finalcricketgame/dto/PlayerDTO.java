@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class PlayerDTO {
-    private int player_id;
+    private int playerId;
     private String name;
 
     public PlayerDTO(Player player) {
-        this.player_id = player.getPlayer_id();
+        this.playerId = player.getPlayer_id();
         this.name = player.getName();
     }
 
@@ -21,12 +21,12 @@ public class PlayerDTO {
         this.name = name;
     }
 
-    public int getPlayer_id() {
-        return player_id;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setPlayer_id(int player_id) {
-        this.player_id = player_id;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
 }
