@@ -37,7 +37,7 @@ public class StatsController {
         return ResponseEntity.ok(scoreCardService.getScoreCardFromES(match_id));
     }
 
-    @GetMapping("/Match/{match_id}/Scorecard/Mongo")
+    @GetMapping("/Match/{match_id}/Scorecard")
     public ResponseEntity<?> getScorecardFromMongo(@PathVariable int match_id) {
         if (!matchService.isValidMatch(match_id)) {
             logger.warn("Scorecard Request received , Match not started yet or no match with match_id {}", match_id);

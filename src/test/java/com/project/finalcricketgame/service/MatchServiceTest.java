@@ -36,6 +36,7 @@ public class MatchServiceTest {
     @Mock
     MatchTeamMappingRepository matchTeamMappingRepository;
     @Spy
+    @InjectMocks
     private MatchService matchServiceSpy;
 
     @BeforeEach
@@ -75,13 +76,12 @@ public class MatchServiceTest {
         doNothing().when(mockInningsService).initialiseInnings(1, mockTeam1, mockTeam2, mockMatch);
         doNothing().when(mockInningsService).beginInnings(Integer.MAX_VALUE);
 
-        matchService.setFirstInningsTotal(100);
-        Mockito.when(mockInningsService.getRuns()).thenReturn(matchService.getFirstInningsTotal());
+        Mockito.when(mockInningsService.getRuns()).thenReturn(100);
         doNothing().when(mockInningsService).initialiseInnings(2, mockTeam2, mockTeam1, mockMatch);
-        doNothing().when(mockInningsService).beginInnings(matchService.getFirstInningsTotal() + 1);
+        doNothing().when(mockInningsService).beginInnings(100 + 1);
         doNothing().when(scoreCardService).createScoreCard(match_id);
-        Mockito.doReturn("LOL").when(matchServiceSpy).updateMatchWinner(mockTeam1, mockTeam2, match_id);
-        matchService.playMatch(match_id);
+        Mockito.doReturn("LOL").when(matchServiceSpy).updateMatchWinner(any(), any(), anyInt());
+        matchServiceSpy.playMatch(match_id);
         verify(mockMatchTeamMappingService, times(1)).findByMatchId(any(Integer.class));
         verify(mockTeamService, times(2)).findTeamById(any(String.class));
         verify(mockInningsService, times(2)).initialiseInnings(any(Integer.class), any(Team.class), any(Team.class), any(Match.class));

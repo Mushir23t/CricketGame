@@ -42,7 +42,7 @@ public class ScoreCardService {
     }
 
     public ScoreCardDTO getScoreCardFromES(int match_id) {
-        Optional<ScoreCard> scoreCard = scoreCardESRepository.findByMatchId(match_id);
+        Optional<ScoreCardES> scoreCard = scoreCardESRepository.findByMatchId(match_id);
         return scoreCard.map(ScoreCardDTO::new).orElse(null);
     }
 
@@ -64,27 +64,15 @@ public class ScoreCardService {
         team1bowlingStats = BowlingStats.toDTO(bowlingService.getStats(match_id, team1.getName()));
         team2bowlingStats = BowlingStats.toDTO(bowlingService.getStats(match_id, team2.getName()));
         String id = UUID.randomUUID().toString();
-        ScoreCard scoreCard = new ScoreCard(id, firstInningsTotal,
+        ScoreCardES scoreCardES = new ScoreCardES(id, firstInningsTotal,
                 firstInningsWicket, secondInningsTotal, secondInningsWicket, match_id,
                 team1battingStats, team2bowlingStats, team2battingStats, team1bowlingStats
         );
-        System.out.println(id);
-        System.out.println(firstInningsTotal);
-        System.out.println(secondInningsTotal);
-        System.out.println(firstInningsWicket);
-        System.out.println(secondInningsWicket);
-        System.out.println(team1battingStats.get(0).getRunsScored());
-        System.out.println(team1bowlingStats.get(0).getBalls());
-        System.out.println(team2battingStats.get(0).getRunsScored());
-        System.out.println(team2bowlingStats.get(0).getBalls());
-        System.out.println(match_id);
         try {
-            ScoreCardMongo scoreCardMongo = new ScoreCardMongo(scoreCard);
+            ScoreCardMongo scoreCardMongo = new ScoreCardMongo(scoreCardES);
             System.out.println(scoreCardMongoRepository.findAll());
             ScoreCardMongo scoreCardMongo1 = scoreCardMongoRepository.save(scoreCardMongo);
-            System.out.println(scoreCardMongoRepository.findAll());
-            System.out.println("HERe" + scoreCardMongo1.getFirstInningsTotal());
-            scoreCardESRepository.save(scoreCard);
+            scoreCardESRepository.save(scoreCardES);
         } catch (NullPointerException e) {
             logger.error("NullPointerException occurred while saving document: " + e.getMessage());
         }

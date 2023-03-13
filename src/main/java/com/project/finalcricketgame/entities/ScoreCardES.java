@@ -16,8 +16,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @NoArgsConstructor
 @Getter
 @Setter
-@Qualifier
-public class ScoreCard {
+public class ScoreCardES {
     @Id
     private String id;
     private int firstInningsTotal;

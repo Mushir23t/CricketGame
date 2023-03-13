@@ -3,7 +3,6 @@ package com.project.finalcricketgame.entities;
 import com.project.finalcricketgame.dto.BattingStatsDTO;
 import com.project.finalcricketgame.dto.BowlingStatsDTO;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,16 +28,16 @@ public class ScoreCardMongo {
     private ArrayList<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
 
 
-    public ScoreCardMongo(ScoreCard scoreCard) {
-        this.id = scoreCard.getId();
-        this.firstInningsTotal = scoreCard.getFirstInningsTotal();
-        this.FirstInningsWicket = scoreCard.getFirstInningsWicket();
-        this.secondInningsTotal = scoreCard.getSecondInningsTotal();
-        this.secondInningsWicket = scoreCard.getSecondInningsWicket();
-        this.matchId = scoreCard.getMatchId();
-        this.team1battingStats = scoreCard.getTeam1battingStats();
-        this.team2battingStats = scoreCard.getTeam2battingStats();
-        this.team1bowlingStats = scoreCard.getTeam1bowlingStats();
-        this.team2bowlingStats = scoreCard.getTeam2bowlingStats();
+    public ScoreCardMongo(ScoreCardES scoreCardES) {
+        this.id = scoreCardES.getId();
+        this.firstInningsTotal = scoreCardES.getFirstInningsTotal();
+        this.FirstInningsWicket = scoreCardES.getFirstInningsWicket();
+        this.secondInningsTotal = scoreCardES.getSecondInningsTotal();
+        this.secondInningsWicket = scoreCardES.getSecondInningsWicket();
+        this.matchId = scoreCardES.getMatchId();
+        this.team1battingStats = scoreCardES.getTeam1battingStats();
+        this.team2battingStats = scoreCardES.getTeam2battingStats();
+        this.team1bowlingStats = scoreCardES.getTeam1bowlingStats();
+        this.team2bowlingStats = scoreCardES.getTeam2bowlingStats();
     }
 }

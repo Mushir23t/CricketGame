@@ -48,6 +48,11 @@ public class MatchService {
     }
 
     public int createMatch(String team1, String team2) {
+
+
+
+
+
         Match match = new Match();
         match = matchRepository.save(match);
         int match_id = match.getMatch_id();
@@ -57,25 +62,35 @@ public class MatchService {
 
 
     public void playMatch(int match_id) {
+
+
+
         MatchTeamMapping matchTeamMapping = matchTeamMappingService.findByMatchId(match_id);
         Match match = matchRepository.findById(match_id);
         Team team1 = teamService.findTeamById(matchTeamMapping.getTeam1_id());
         Team team2 = teamService.findTeamById(matchTeamMapping.getTeam2_id());
+
+        //Inning 2 simukted
         inningsService.initialiseInnings(1, team1, team2, match);
         logger.debug("First innings started with batting Team {}", team1.getName());
         inningsService.beginInnings(Integer.MAX_VALUE);
         firstInningsTotal = inningsService.getRuns();
         logger.debug("Team {} scored {}/{}", team1.getName(), firstInningsTotal, inningsService.getWickets());
+
+
+
         inningsService.initialiseInnings(2, team2, team1, match);
         inningsService.beginInnings(firstInningsTotal + 1);
         secondInningsTotal = inningsService.getRuns();
         logger.debug("Team  {} scored {} / {}", team2.getName(), inningsService.getRuns(), inningsService.getWickets());
+
+
         updateMatchWinner(team1, team2, match.getMatch_id());
         logger.debug("Team {} won", match.getWinner());
         scoreCardService.createScoreCard(match_id);
     }
 
-    public void updateMatchWinner(Team team1, Team team2, int id) {
+    public String updateMatchWinner(Team team1, Team team2, int id) {
         Match match = matchRepository.findById(id);
         if (Objects.equals(firstInningsTotal, secondInningsTotal)) {
             match.setWinner("");
@@ -86,6 +101,7 @@ public class MatchService {
         }
         match.setStatus("Finished");
         matchRepository.save(match);
+        return "LOL";
     }
 
     public boolean check(int match_id) {

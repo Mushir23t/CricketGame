@@ -5,6 +5,8 @@ import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.Overs;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.repository.jpa.InningsRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
+@Setter
+@Getter
 public class InningsService {
     @Autowired
     InningsRepository inningsRepository;
@@ -24,7 +28,7 @@ public class InningsService {
     private Team battingTeam;
     private Team bowlingTeam;
     Innings inningsObject1, inningsObject2;
-    private HashMap<Integer, Integer> OversBowledByPlayers;
+    private HashMap<Integer, Integer> oversBowledByPlayers;
     ArrayList<Overs> oversList;
     private int runs, wickets, bowlerNumber, onStrikeBatsman, nonStrikeBatsman;
     private boolean inningsEnded;
@@ -43,6 +47,9 @@ public class InningsService {
 
     private int inningsNumber;
 
+    public Integer getNextBowler() {
+        return BowlingService.GetBowler(bowlerNumber, oversBowledByPlayers);
+    }
 
     void initialiseInnings(int inningsNumber, Team battingTeam, Team bowlingTeam, Match match) {
         this.battingTeam = battingTeam;
@@ -55,7 +62,7 @@ public class InningsService {
         nonStrikeBatsman = 2;
         inningsEnded = false;
         oversList = new ArrayList<>();
-        OversBowledByPlayers = new HashMap<>();
+        oversBowledByPlayers = new HashMap<>();
         if (inningsNumber == 1)
             inningsObject1 = new Innings(inningsNumber, battingTeam.getName(), bowlingTeam.getName(), match);
         else
@@ -66,7 +73,7 @@ public class InningsService {
 
     public void beginInnings(int target) {
         for (int overNumber = 1; overNumber <= 20; overNumber++) {
-            bowlerNumber = BowlingService.GetBowler(bowlerNumber, OversBowledByPlayers);
+            bowlerNumber = getNextBowler();
             Overs curOver = new Overs();
             curOver.setOver_number(overNumber);
             int ballsBowled = beginOver(target, curOver);
@@ -98,7 +105,7 @@ public class InningsService {
         return BallsBowled;
     }
 
-    private void updateStats(Integer score) {
+    public void updateStats(Integer score) {
         bowlingService.updateStats(bowlerNumber, score);
         battingService.updateStats(onStrikeBatsman, score);
         if (score == 7) {

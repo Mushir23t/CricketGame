@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FinalCricketGameApplication {
+public class CricketGameApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(FinalCricketGameApplication.class, args);
+		SpringApplication.run(CricketGameApplication.class, args);
 	}
 }

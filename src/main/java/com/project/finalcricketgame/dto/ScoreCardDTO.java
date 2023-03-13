@@ -1,6 +1,6 @@
 package com.project.finalcricketgame.dto;
 
-import com.project.finalcricketgame.entities.ScoreCard;
+import com.project.finalcricketgame.entities.ScoreCardES;
 import com.project.finalcricketgame.entities.ScoreCardMongo;
 import lombok.Data;
 
@@ -18,16 +18,16 @@ public class ScoreCardDTO {
     private ArrayList<BattingStatsDTO> team2battingStats = new ArrayList<>();
     private ArrayList<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
 
-    public ScoreCardDTO(ScoreCard scoreCard){
-        this.firstInningsTotal = scoreCard.getFirstInningsTotal();
-        this.FirstInningsWicket = scoreCard.getFirstInningsWicket();
-        this.secondInningsTotal = scoreCard.getSecondInningsTotal();
-        this.secondInningsWicket = scoreCard.getSecondInningsWicket();
-        this.matchId = scoreCard.getMatchId();
-        this.team1battingStats = scoreCard.getTeam1battingStats();
-        this.team2battingStats = scoreCard.getTeam2battingStats();
-        this.team1bowlingStats = scoreCard.getTeam1bowlingStats();
-        this.team2bowlingStats = scoreCard.getTeam2bowlingStats();
+    public ScoreCardDTO(ScoreCardES scoreCardES){
+        this.firstInningsTotal = scoreCardES.getFirstInningsTotal();
+        this.FirstInningsWicket = scoreCardES.getFirstInningsWicket();
+        this.secondInningsTotal = scoreCardES.getSecondInningsTotal();
+        this.secondInningsWicket = scoreCardES.getSecondInningsWicket();
+        this.matchId = scoreCardES.getMatchId();
+        this.team1battingStats = scoreCardES.getTeam1battingStats();
+        this.team2battingStats = scoreCardES.getTeam2battingStats();
+        this.team1bowlingStats = scoreCardES.getTeam1bowlingStats();
+        this.team2bowlingStats = scoreCardES.getTeam2bowlingStats();
     }
     public ScoreCardDTO(ScoreCardMongo scoreCardMongo){
         this.firstInningsTotal = scoreCardMongo.getFirstInningsTotal();

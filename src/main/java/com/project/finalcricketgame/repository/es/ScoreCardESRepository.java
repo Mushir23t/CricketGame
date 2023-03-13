@@ -1,7 +1,5 @@
 package com.project.finalcricketgame.repository.es;
-import com.project.finalcricketgame.entities.ScoreCard;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
+import com.project.finalcricketgame.entities.ScoreCardES;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
@@ -9,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ScoreCardESRepository extends ElasticsearchRepository<ScoreCard, String> {
+public interface ScoreCardESRepository extends ElasticsearchRepository<ScoreCardES, String> {
     @Query("{\"match\": {\"MatchId\": {\"query\": \"?0\"}}}")
-    Optional<ScoreCard> findByMatchId(int matchId);
+    Optional<ScoreCardES> findByMatchId(int matchId);
 }
