@@ -1,8 +1,10 @@
 package com.project.finalcricketgame.entities;
 
 
+import com.project.finalcricketgame.dto.MatchDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Match {
 
     @Id
@@ -21,33 +24,12 @@ public class Match {
     private String status = "Not started yet";
     private boolean isDeleted = false;
 
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    public int getMatch_id() {
-        return match_id;
-    }
-
-    public String getWinner() {
-        return winner;
-    }
-
-    public void setWinner(String winner) {
-        this.winner = winner;
+    public static MatchDTO toDTO(Match match){
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setMatch_id(match.getMatch_id());
+        matchDTO.setStatus(match.getStatus());
+        matchDTO.setWinner(match.getWinner());
+        return matchDTO;
     }
 
 }

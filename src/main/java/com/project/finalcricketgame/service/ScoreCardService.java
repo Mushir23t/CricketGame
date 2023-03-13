@@ -70,8 +70,7 @@ public class ScoreCardService {
         );
         try {
             ScoreCardMongo scoreCardMongo = new ScoreCardMongo(scoreCardES);
-            System.out.println(scoreCardMongoRepository.findAll());
-            ScoreCardMongo scoreCardMongo1 = scoreCardMongoRepository.save(scoreCardMongo);
+            scoreCardMongoRepository.save(scoreCardMongo);
             scoreCardESRepository.save(scoreCardES);
         } catch (NullPointerException e) {
             logger.error("NullPointerException occurred while saving document: " + e.getMessage());

@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("CricketGame")
 public class TeamController {
-
     @Autowired
     TeamService teamService;
     private static final Logger logger = LoggerFactory.getLogger(TeamController.class);

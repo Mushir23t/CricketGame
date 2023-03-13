@@ -16,7 +16,6 @@ public class StatsController {
 
     @Autowired
     ScoreCardService scoreCardService;
-
     @Autowired
     MatchService matchService;
     @Autowired
@@ -25,7 +24,7 @@ public class StatsController {
     BattingService battingService;
     @Autowired
     BowlingService bowlingService;
-    private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
+    private static final Logger logger = LoggerFactory.getLogger(StatsController.class);
 
     @GetMapping("Match/{match_id}/Scorecard/ES")
     public ResponseEntity<?> getScorecardFromES(@PathVariable int match_id) {

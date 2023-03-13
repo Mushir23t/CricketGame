@@ -6,16 +6,19 @@ import com.project.finalcricketgame.entities.Overs;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.repository.jpa.InningsRepository;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @Setter
 @Getter
+@NoArgsConstructor
 public class InningsService {
     @Autowired
     InningsRepository inningsRepository;
@@ -29,22 +32,9 @@ public class InningsService {
     private Team bowlingTeam;
     Innings inningsObject1, inningsObject2;
     private HashMap<Integer, Integer> oversBowledByPlayers;
-    ArrayList<Overs> oversList;
+    List<Overs> oversList;
     private int runs, wickets, bowlerNumber, onStrikeBatsman, nonStrikeBatsman;
     private boolean inningsEnded;
-
-    public int getRuns() {
-        return runs;
-    }
-
-    public int getWickets() {
-        return wickets;
-    }
-
-    InningsService() {
-
-    }
-
     private int inningsNumber;
 
     public Integer getNextBowler() {
@@ -73,6 +63,7 @@ public class InningsService {
 
     public void beginInnings(int target) {
         for (int overNumber = 1; overNumber <= 20; overNumber++) {
+            // Generates bowler other than prev bowler and oversBowled < 4
             bowlerNumber = getNextBowler();
             Overs curOver = new Overs();
             curOver.setOver_number(overNumber);
@@ -121,7 +112,7 @@ public class InningsService {
         }
     }
 
-    // setting foreign key for innings in over table
+    // setting foreign key innings in over table
     void updateOvers() {
         for (Overs overs : oversList) {
             if (inningsNumber == 1)

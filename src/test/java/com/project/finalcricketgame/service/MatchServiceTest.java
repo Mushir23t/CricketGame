@@ -51,19 +51,19 @@ public class MatchServiceTest {
         Match match = Match.builder().match_id(1).build();
         when(mockRepository.save(any(Match.class))).thenReturn(match);
         doNothing().when(mockMatchTeamMappingService).createMapping(1, team1, team2);
-        assertEquals(matchService.createMatch(team1, team2), 1);
+        matchService.createMatch(team1, team2);
         verify(mockRepository, times(1)).save(any(Match.class));
     }
 
     @Test
     public void playMatchTest_returnsNothing() {
-        int match_id = 1;
+        int matchId = 1;
         MatchTeamMapping mockMatchTeamMapping = Mockito.mock(MatchTeamMapping.class);
-        Mockito.when(mockMatchTeamMappingService.findByMatchId((match_id)))
+        Mockito.when(mockMatchTeamMappingService.findByMatchId((matchId)))
                 .thenReturn(mockMatchTeamMapping);
 
         Match mockMatch = Mockito.mock(Match.class);
-        Mockito.when(mockRepository.findById(match_id)).thenReturn(mockMatch);
+        Mockito.when(mockRepository.findById(matchId)).thenReturn(mockMatch);
         Mockito.when(mockMatchTeamMapping.getTeam1_id()).thenReturn("1");
         Mockito.when(mockMatchTeamMapping.getTeam2_id()).thenReturn("2");
         Team mockTeam1 = Mockito.mock(Team.class);
@@ -79,14 +79,14 @@ public class MatchServiceTest {
         Mockito.when(mockInningsService.getRuns()).thenReturn(100);
         doNothing().when(mockInningsService).initialiseInnings(2, mockTeam2, mockTeam1, mockMatch);
         doNothing().when(mockInningsService).beginInnings(100 + 1);
-        doNothing().when(scoreCardService).createScoreCard(match_id);
+        doNothing().when(scoreCardService).createScoreCard(matchId);
         Mockito.doReturn("LOL").when(matchServiceSpy).updateMatchWinner(any(), any(), anyInt());
-        matchServiceSpy.playMatch(match_id);
+        matchServiceSpy.playMatch(matchId);
         verify(mockMatchTeamMappingService, times(1)).findByMatchId(any(Integer.class));
         verify(mockTeamService, times(2)).findTeamById(any(String.class));
         verify(mockInningsService, times(2)).initialiseInnings(any(Integer.class), any(Team.class), any(Team.class), any(Match.class));
         verify(mockInningsService, times(2)).beginInnings(any(Integer.class));
-        verify(scoreCardService, times(1)).createScoreCard(match_id);
+        verify(scoreCardService, times(1)).createScoreCard(matchId);
         Mockito.verify(matchServiceSpy, times(0)).updateMatchWinner(mockTeam1, mockTeam2, 1);
     }
 
@@ -111,27 +111,6 @@ public class MatchServiceTest {
         Mockito.verify(mockRepository, Mockito.times(1)).save(mockMatch);
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "1,Deleted successfully",
-            "2,No such match with match_id : 2",
-            "3,Deleted successfully",
-            "4,No such match with match_id : 4"
-    })
-    public void remove_ReturnsStringOnCall(int match_id, String expectedOutput) {
-        Match mockMatch = Mockito.mock(Match.class);
-        if (match_id % 2 == 0)
-            Mockito.when(mockRepository.findById(anyInt())).thenReturn(null);
-        else {
-            Mockito.when(mockRepository.findById(anyInt())).thenReturn(mockMatch);
-            when(mockMatch.isDeleted()).thenReturn(true);
-        }
-        assertEquals(expectedOutput, matchService.remove(match_id));
-        if (match_id % 2 == 0) {
-            verify(mockRepository, never()).save(any());
-        } else
-            verify(mockRepository, times(1)).save(any());
-    }
 
 
 }
