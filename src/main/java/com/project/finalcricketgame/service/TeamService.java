@@ -1,16 +1,21 @@
 package com.project.finalcricketgame.service;
 
-import com.project.finalcricketgame.controller.MatchController;
+import com.project.finalcricketgame.dto.PlayerDTO;
 import com.project.finalcricketgame.dto.TeamDTO;
 import com.project.finalcricketgame.entities.MatchTeamMapping;
+import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.repository.jpa.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -18,104 +23,98 @@ import java.util.Objects;
 public class TeamService {
     @Autowired
     TeamRepository teamRepository;
-
     @Autowired
     PlayerService playerService;
-
     @Autowired
     PlayerTeamMapService playerTeamMapService;
-
     @Autowired
     MatchTeamMappingService matchTeamMappingService;
 
-    public String addTeam(TeamDTO teamDTO) {
+    private static final Logger logger = LoggerFactory.getLogger(TeamService.class);
+
+    public TeamDTO addTeam(TeamDTO teamDTO) {
         Team team = new Team(teamDTO);
         if (teamRepository.existsById(team.getName())) {
             logger.warn("Team creation request, but team already exist");
-            return "Change Team name";
+            throw new DuplicateKeyException("Team already exist");
         }
         if (Objects.equals(team.getName(), "")) {
             logger.warn("Team creation request with empty name");
-            return "TEAM NAME CAN'T BE EMPTY";
+            throw new BadRequestException("Team name is empty");
         }
-        teamRepository.save(team);
-        logger.info("Team {} created",team.getName());
-        return "Team added Successfully";
+        team = teamRepository.save(team);
+        logger.info("Team {} created", team.getName());
+        return teamDTO;
     }
 
-    public String findById(String team_id){
-        if(teamRepository.findById(team_id).isEmpty()){
-            return "";
+    public List<PlayerDTO> getTeam(String teamId) {
+        if (!teamExists(teamId)) {
+            logger.warn("Team Get Request received , But Team with team_id {} doesn't exist", teamId);
+            throw new NotFoundException("Team " + teamId + "Doesn't exist");
         }
-        return "OK";
+        List<Player> players = playerTeamMapService.findByTeam(teamId);
+        List<PlayerDTO> playersList = new ArrayList<>();
+        for (Player player : players) {
+            playersList.add(new PlayerDTO(player));
+        }
+        logger.info("Team details for team {} fetched", teamId);
+        return playersList;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
-    public Team findTeamById(String team_id){
-        return teamRepository.findById(team_id).get();
+    public Team findTeamById(String teamId) {
+        return teamRepository.findById(teamId).get();
     }
 
-    public ArrayList<Team> getTeams() {
-        return teamRepository.findTop8ByOrderByCreatedAtDesc();
-    }
-
-    public Long noOfTeams() {
-        return teamRepository.count();
-    }
-
-    public String addPlayer(String teamName, int player_id) {
-        if (teamRepository.findByname(teamName) == null) {
-            logger.warn("Team Get Request received , But Team with team_id {} doesn't exist",teamName);
-            return "Team " + teamName + " doesn't exist";
+    public String addPlayerToTeam(String teamName, int playerId) {
+        if (teamRepository.findById(teamName).isEmpty()) {
+            logger.warn("Team Get Request received , But Team with team_id {} doesn't exist", teamName);
+            throw new NotFoundException("Team " + teamName + "Doesn't exist");
         }
-        // ya to player id na ho ya active na ho
-        if (playerService.findByisActive(player_id).isEmpty()) {
-            logger.warn("Player addition to team request received, but Player {} doesn't exist",player_id);
-            return "Player with player_id " + player_id + " doesn't exist";
+        if (playerService.findByisActive(playerId).isEmpty()) {
+            logger.warn("Player addition to team request received, but Player {} doesn't exist", playerId);
+            throw new NotFoundException("Player with player_id: " + playerId + "Doesn't exist");
         }
-        if (playerTeamMapService.findByPlayerID(player_id).size() == 1) {
-            logger.warn("Player addition to team request received, but Player {} is already in a team",player_id);
-            return "Player is already in a team";
+        if (playerTeamMapService.findByPlayerID(playerId).size() == 1) {
+            logger.warn("Player addition to team request received, but Player {} is already in a team", playerId);
+            throw new IllegalStateException("Player is already in a team");
         }
-        playerTeamMapService.addPlayerToTeam(teamName, player_id);
-        logger.info("Player {} added to Team {}", player_id,teamName);
+        playerTeamMapService.addPlayerToTeam(teamName, playerId);
+        logger.info("Player {} added to Team {}", playerId, teamName);
         return "Player added to Team successfully";
     }
 
-    // player will be removed from the team, will remain active though
-    // player team relation will be deleted;
-    public String removePlayer(String teamName, int player_id) {
-        if (teamRepository.findByname(teamName) == null) {
-            logger.warn("Player removal from team request received , But Team with team_id {} doesn't exist",teamName);
-            return "Team " + teamName + " doesn't exist";
+    public String removePlayerFromTeam(String teamName, int playerId) {
+        if (teamRepository.findById(teamName).isEmpty()) {
+            logger.warn("Player removal from team request received , But Team with team_id {} doesn't exist", teamName);
+            throw new NotFoundException("Team " + teamName + "Doesn't exist");
         }
-        if (playerService.findByisActive(player_id).isEmpty()) {
-            logger.warn("Player removal from team request received, but Player {} doesn't exist",player_id);
-            return "Player with player_id " + player_id + " doesn't exist";
+        if (playerService.findByisActive(playerId).isEmpty()) {
+            logger.warn("Player removal from team request received, but Player {} doesn't exist", playerId);
+            throw new NotFoundException("Player with player_id: " + playerId + "Doesn't exist");
         }
-        if (playerTeamMapService.findByPlayerID(player_id).size() == 0) {
-            logger.warn("Player removal from team request received, but Player {} not in the team",player_id);
-            return "Player is not in the team";
+        if (playerTeamMapService.findByPlayerID(playerId).size() == 0) {
+            logger.warn("Player removal from team request received, but Player {} not in the team", playerId);
+            throw new IllegalStateException("Player is not in a team");
         }
-        playerTeamMapService.removePlayerFromTeam(player_id);
-        logger.info("Player {} removed from Team {}", player_id,teamName);
-        return "Player remove from Team successfully";
+        playerTeamMapService.removePlayerFromTeam(playerId);
+        logger.info("Player {} removed from Team {}", playerId, teamName);
+        return "Player removed from Team successfully";
     }
 
-    public boolean validTeam(String teamName){
-        return teamRepository.findByname(teamName) != null;
+    public boolean teamExists(String teamName) {
+        return teamRepository.findById(teamName).isPresent();
     }
-    public boolean TeamsValidity(int match_id){
-        MatchTeamMapping matchTeamMapping = matchTeamMappingService.findByMatchId(match_id);
-        if(matchTeamMapping == null)
-            return false;
+
+    public boolean teamsValidityForMatch(int matchId) {
+        MatchTeamMapping matchTeamMapping = matchTeamMappingService.findByMatchId(matchId);
+        if (matchTeamMapping == null) return false;
         String team1 = matchTeamMapping.getTeam1_id();
         String team2 = matchTeamMapping.getTeam2_id();
-        return check(team1) && check(team2);
+        return checkCountOfPlayerInTeam(team1) && checkCountOfPlayerInTeam(team2);
     }
 
-    public boolean check(String team_id){
-        return playerTeamMapService.countOfPlayerinTeam(team_id) >= 11;
+    public boolean checkCountOfPlayerInTeam(String teamId) {
+        return playerTeamMapService.countOfPlayerinTeam(teamId) >= 11;
     }
 
 

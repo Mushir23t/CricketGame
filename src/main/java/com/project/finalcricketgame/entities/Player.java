@@ -26,6 +26,7 @@ public class Player {
 
     public Player(CreatePlayerDTO createPlayerDTO){
         this.name = createPlayerDTO.getName();
+        this.isActive = true;
     }
 
 
