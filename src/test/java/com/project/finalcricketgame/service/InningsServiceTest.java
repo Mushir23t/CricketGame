@@ -23,7 +23,6 @@ import static org.mockito.Mockito.*;
 public class InningsServiceTest {
     @Mock
     private InningsRepository inningsRepository;
-
     @Mock
     private BowlingService bowlingService;
 

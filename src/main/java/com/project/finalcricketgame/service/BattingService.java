@@ -5,11 +5,14 @@ import com.project.finalcricketgame.entities.Match;
 import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.entities.Team;
 import com.project.finalcricketgame.repository.jpa.BattingStatsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
+import javax.ws.rs.NotFoundException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -24,11 +27,10 @@ public class BattingService {
     @Autowired
     PlayerTeamMapService playerTeamMapService;
 
-//    @Autowired
-//    BattingStatsRepositoryES battingStatsRepositoryES;
-
+    @Autowired
+    PlayerService playerService;
     ArrayList<BattingStats> battingStatsList;
-
+    private static final Logger logger = LoggerFactory.getLogger(BattingService.class);
 
     Integer totalRuns(int match_id, String team_id) {
         return battingStatsRepository.findRunsScoredByPlayerAndMatch(match_id, team_id);
@@ -40,7 +42,7 @@ public class BattingService {
         return battingStats;
     }
 
-    void set(Team battingTeam, Match match) {
+    void setTeam(Team battingTeam, Match match) {
         battingStatsList = new ArrayList<>();
         List<Player> playerList = new ArrayList<>();
         playerList = playerTeamMapService.findByTeam(battingTeam.getName());
@@ -64,8 +66,13 @@ public class BattingService {
 
     }
 
-    public ResponseEntity<?> getBattingStats(int player_id) {
-        Tuple tuple = battingStatsRepository.findByPlayer(player_id);
+    public ResponseEntity<?> getBattingStats(int playerId) {
+        if (playerService.findByisActive(playerId).isEmpty()) {
+            logger.warn("BattingStats Request received , But player with playerId {} doesnt exist", playerId);
+            throw new NotFoundException("Player with playerId: " + playerId + "Doesn't exist");
+        }
+        logger.info("BattingStats Request received , BattingStats  of Player {} fetched", playerId);
+        Tuple tuple = battingStatsRepository.findByPlayer(playerId);
         Map<String, BigDecimal> result = new HashMap<>();
         result.put("balls_played", (BigDecimal) tuple.get("sum(balls_played)"));
         result.put("runs_scored", (BigDecimal) tuple.get("sum(runs_scored)"));

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,50 +30,55 @@ public class ScoreCardService {
     ScoreCardMongoRepository scoreCardMongoRepository;
     @Autowired
     ScoreCardESRepository scoreCardESRepository;
+    @Autowired
+    MatchService matchService;
     private static final Logger logger = LoggerFactory.getLogger(ScoreCardService.class);
 
-    public ScoreCardDTO getScoreCardFromMongo(int match_id) {
-        ScoreCardMongo scoreCardMongo = scoreCardMongoRepository.findBymatchId(match_id);
-        System.out.println(scoreCardMongo);
-        System.out.println("REACHED HERE");
-        ScoreCardDTO scoreCardDTO = new ScoreCardDTO(scoreCardMongo);
-        System.out.println(scoreCardDTO);
-        return scoreCardDTO;
+    public ScoreCardDTO getScoreCardFromMongo(int matchId) {
+        if (!matchService.isValidMatch(matchId)) {
+            logger.warn("Scorecard Request received , Match not started yet or no match with matchId {}", matchId);
+            throw new RuntimeException("Match not played or no match with matchId:" + matchId);
+        }
+        logger.info("Scorecard Request received , Scorecard of Match {} fetched", matchId);
+        ScoreCard scoreCard = scoreCardMongoRepository.findBymatchId(matchId);
+        return new ScoreCardDTO(scoreCard);
     }
 
-    public ScoreCardDTO getScoreCardFromES(int match_id) {
-        Optional<ScoreCardES> scoreCard = scoreCardESRepository.findByMatchId(match_id);
+    public ScoreCardDTO getScoreCardFromES(int matchId) {
+        if (!matchService.isValidMatch(matchId)) {
+            logger.warn("Scorecard Request received , Match not started yet or no match with matchId {}", matchId);
+            throw new RuntimeException("Match not played or no match with matchId:" + matchId);
+        }
+        logger.info("Scorecard Request received , Scorecard of Match {} fetched", matchId);
+        Optional<ScoreCardES> scoreCard = scoreCardESRepository.findByMatchId(matchId);
         return scoreCard.map(ScoreCardDTO::new).orElse(null);
     }
 
-    public void createScoreCard(int match_id) {
+    public void createScoreCard(int matchId) {
 
-        MatchTeamMapping matchTeamMapping = matchTeamMappingService.findByMatchId(match_id);
+        MatchTeamMapping matchTeamMapping = matchTeamMappingService.findByMatchId(matchId);
         Team team1 = teamService.findTeamById(matchTeamMapping.getTeam1_id());
         Team team2 = teamService.findTeamById(matchTeamMapping.getTeam2_id());
-        int firstInningsTotal = battingService.totalRuns(match_id, team1.getName());
-        int firstInningsWicket = bowlingService.totalWickets(match_id, team2.getName());
-        int secondInningsTotal = battingService.totalRuns(match_id, team2.getName());
-        int secondInningsWicket = bowlingService.totalWickets(match_id, team1.getName());
-        ArrayList<BattingStatsDTO> team1battingStats = new ArrayList<>();
-        ArrayList<BowlingStatsDTO> team2bowlingStats = new ArrayList<>();
-        ArrayList<BattingStatsDTO> team2battingStats = new ArrayList<>();
-        ArrayList<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
-        team1battingStats = BattingStats.toDTO(battingService.getStats(match_id, team1.getName()));
-        team2battingStats = BattingStats.toDTO(battingService.getStats(match_id, team2.getName()));
-        team1bowlingStats = BowlingStats.toDTO(bowlingService.getStats(match_id, team1.getName()));
-        team2bowlingStats = BowlingStats.toDTO(bowlingService.getStats(match_id, team2.getName()));
+        int firstInningsTotal = battingService.totalRuns(matchId, team1.getName());
+        int firstInningsWicket = bowlingService.totalWickets(matchId, team2.getName());
+        int secondInningsTotal = battingService.totalRuns(matchId, team2.getName());
+        int secondInningsWicket = bowlingService.totalWickets(matchId, team1.getName());
+        List<BattingStatsDTO> team1battingStats = BattingStats.toDTO(battingService.getStats(matchId, team1.getName()));
+        List<BattingStatsDTO> team2battingStats = BattingStats.toDTO(battingService.getStats(matchId, team2.getName()));
+        List<BowlingStatsDTO> team1bowlingStats = BowlingStats.toDTO(bowlingService.getStats(matchId, team1.getName()));
+        List<BowlingStatsDTO> team2bowlingStats = BowlingStats.toDTO(bowlingService.getStats(matchId, team2.getName()));
         String id = UUID.randomUUID().toString();
         ScoreCardES scoreCardES = new ScoreCardES(id, firstInningsTotal,
-                firstInningsWicket, secondInningsTotal, secondInningsWicket, match_id,
+                firstInningsWicket, secondInningsTotal, secondInningsWicket, matchId,
                 team1battingStats, team2bowlingStats, team2battingStats, team1bowlingStats
         );
         try {
-            ScoreCardMongo scoreCardMongo = new ScoreCardMongo(scoreCardES);
-            scoreCardMongoRepository.save(scoreCardMongo);
+            ScoreCard scoreCard = new ScoreCard(scoreCardES);
+            scoreCardMongoRepository.save(scoreCard);
             scoreCardESRepository.save(scoreCardES);
         } catch (NullPointerException e) {
             logger.error("NullPointerException occurred while saving document: " + e.getMessage());
+            throw new NullPointerException("ES Write Response Messed up");
         }
     }
 }

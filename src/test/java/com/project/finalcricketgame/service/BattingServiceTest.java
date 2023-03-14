@@ -1,5 +1,6 @@
 package com.project.finalcricketgame.service;
 
+import com.project.finalcricketgame.entities.Player;
 import com.project.finalcricketgame.repository.jpa.BattingStatsRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,6 +34,9 @@ public class BattingServiceTest {
     @Mock
     PlayerTeamMapService playerTeamMapService;
 
+    @Mock
+    PlayerService playerService;
+
     @BeforeEach()
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -41,6 +46,8 @@ public class BattingServiceTest {
     public void getBattingStatsTest_returnsResponseMadeOfTuple(){
         int playerId = 1;
         Tuple tuple = mock(Tuple.class);
+        Optional<Player> player = Optional.of(new Player());
+        when(playerService.findByisActive(playerId)).thenReturn(player);
         when(mockRepository.findByPlayer(playerId)).thenReturn(tuple);
         when(tuple.get("sum(balls_played)")).thenReturn(BigDecimal.valueOf(100));
         when(tuple.get("sum(runs_scored)")).thenReturn(BigDecimal.valueOf(50));

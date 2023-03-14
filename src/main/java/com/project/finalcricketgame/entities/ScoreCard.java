@@ -7,14 +7,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "scorecard")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Data
-public class ScoreCardMongo {
+public class ScoreCard {
     @Id
     private String id;
     private int firstInningsTotal;
@@ -22,13 +21,13 @@ public class ScoreCardMongo {
     private int secondInningsTotal;
     private int secondInningsWicket;
     private int matchId;
-    private ArrayList<BattingStatsDTO> team1battingStats = new ArrayList<>();
-    private ArrayList<BowlingStatsDTO> team2bowlingStats = new ArrayList<>();
-    private ArrayList<BattingStatsDTO> team2battingStats = new ArrayList<>();
-    private ArrayList<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
+    private List<BattingStatsDTO> team1battingStats = new ArrayList<>();
+    private List<BowlingStatsDTO> team2bowlingStats = new ArrayList<>();
+    private List<BattingStatsDTO> team2battingStats = new ArrayList<>();
+    private List<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
 
 
-    public ScoreCardMongo(ScoreCardES scoreCardES) {
+    public ScoreCard(ScoreCardES scoreCardES) {
         this.id = scoreCardES.getId();
         this.firstInningsTotal = scoreCardES.getFirstInningsTotal();
         this.FirstInningsWicket = scoreCardES.getFirstInningsWicket();

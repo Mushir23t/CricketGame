@@ -2,11 +2,14 @@ package com.project.finalcricketgame.service;
 
 import com.project.finalcricketgame.entities.*;
 import com.project.finalcricketgame.repository.jpa.BowlingStatsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
+import javax.ws.rs.NotFoundException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -16,9 +19,12 @@ public class BowlingService {
 
     @Autowired
     BowlingStatsRepository bowlingStatsRepository;
-
     @Autowired
     TeamService teamService;
+    @Autowired
+    PlayerService playerService;
+
+    private static final Logger logger = LoggerFactory.getLogger(BowlingService.class);
 
     public static Integer GetBowler(Integer prevBowler, HashMap<Integer, Integer> oversBowledByPlayers) {
         Random num = new Random();
@@ -60,7 +66,7 @@ public class BowlingService {
     @Autowired
     PlayerTeamMapService playerTeamMapService;
 
-    void set(Team bowlingTeam, Match match) {
+    void setTeam(Team bowlingTeam, Match match) {
         bowlingStatsList = new ArrayList<>();
         List<Player> playerList = new ArrayList<>();
         playerList = playerTeamMapService.findByTeam(bowlingTeam.getName());
@@ -90,8 +96,13 @@ public class BowlingService {
         }
     }
 
-    public ResponseEntity<?> getBowlingStats(int player_id) {
-        Tuple tuple = bowlingStatsRepository.findByPlayer(player_id);
+    public ResponseEntity<?> getBowlingStats(int playerId) {
+        if (playerService.findByisActive(playerId).isEmpty()) {
+            logger.warn("BowlingStats Request received , But player with playerId {} doesnt exist", playerId);
+           throw new NotFoundException("Player with playerId: " + playerId + "Doesn't exist");
+        }
+        logger.info("BowlingStats Request received , BowlingStats  of Player {} fetched", playerId);
+        Tuple tuple = bowlingStatsRepository.findByPlayer(playerId);
         Map<String, BigDecimal> result = new HashMap<>();
         result.put("overs", (BigDecimal) tuple.get("sum(overs)"));
         result.put("wickets", (BigDecimal) tuple.get("sum(wickets)"));
@@ -99,9 +110,6 @@ public class BowlingService {
         return ResponseEntity.ok(result);
     }
 
-    private static final int x = 1;
-    private static final int x2 = 1;
-    private static final int x1= 1;
 
 
 }

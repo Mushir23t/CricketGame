@@ -6,6 +6,7 @@ import com.project.finalcricketgame.dto.BowlingStatsDTO;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.annotation.Id;
@@ -24,10 +25,10 @@ public class ScoreCardES {
     private int secondInningsTotal;
     private int secondInningsWicket;
     private int MatchId;
-    private ArrayList<BattingStatsDTO> team1battingStats = new ArrayList<>();
-    private ArrayList<BowlingStatsDTO> team2bowlingStats = new ArrayList<>();
-    private ArrayList<BattingStatsDTO> team2battingStats = new ArrayList<>();
-    private ArrayList<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
+    private List<BattingStatsDTO> team1battingStats = new ArrayList<>();
+    private List<BowlingStatsDTO> team2bowlingStats = new ArrayList<>();
+    private List<BattingStatsDTO> team2battingStats = new ArrayList<>();
+    private List<BowlingStatsDTO> team1bowlingStats = new ArrayList<>();
 
 
 }

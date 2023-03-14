@@ -57,8 +57,8 @@ public class InningsService {
             inningsObject1 = new Innings(inningsNumber, battingTeam.getName(), bowlingTeam.getName(), match);
         else
             inningsObject2 = new Innings(inningsNumber, battingTeam.getName(), bowlingTeam.getName(), match);
-        bowlingService.set(bowlingTeam, match);
-        battingService.set(battingTeam, match);
+        bowlingService.setTeam(bowlingTeam, match);
+        battingService.setTeam(battingTeam, match);
     }
 
     public void beginInnings(int target) {

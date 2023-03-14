@@ -1,6 +1,7 @@
 package com.project.finalcricketgame.entities;
 
 import com.project.finalcricketgame.dto.BattingStatsDTO;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "battingStats")
 @NoArgsConstructor
+@Data
 public class BattingStats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,39 +41,6 @@ public class BattingStats {
         }
         return bdto;
     }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public String getTeam_id() {
-        return team_id;
-    }
-
-    public void setTeam_id(String team_id) {
-        this.team_id = team_id;
-    }
-
-    public int getBallsPlayed() {
-        return ballsPlayed;
-    }
-
-    public void setBallsPlayed(int ballsPlayed) {
-        this.ballsPlayed = ballsPlayed;
-    }
-
-    public int getRunsScored() {
-        return runsScored;
-    }
-
-    public void setRunsScored(int runsScored) {
-        this.runsScored = runsScored;
-    }
-
 
 
 }

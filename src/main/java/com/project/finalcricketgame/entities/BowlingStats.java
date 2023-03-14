@@ -2,6 +2,7 @@ package com.project.finalcricketgame.entities;
 
 import com.project.finalcricketgame.dto.BattingStatsDTO;
 import com.project.finalcricketgame.dto.BowlingStatsDTO;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name = "bowlingStats")
+@Data
 public class BowlingStats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,38 +57,4 @@ public class BowlingStats {
         }
         return bdto;
     }
-
-    public int getOvers() {
-        return overs;
-    }
-
-    public void setOvers(int overs) {
-        this.overs = overs;
-    }
-
-    public int getBalls() {
-        return balls;
-    }
-
-    public void setBalls(int balls) {
-        this.balls = balls;
-    }
-
-    public int getWickets() {
-        return wickets;
-    }
-
-    public void setWickets(int wickets) {
-        this.wickets = wickets;
-    }
-
-    public int getRuns() {
-        return runs;
-    }
-
-    public void setRuns(int runs) {
-        this.runs = runs;
-    }
-
-
 }
